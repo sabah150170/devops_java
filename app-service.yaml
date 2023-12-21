@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-app-one-service
+spec:
+  selector:
+    app: java-app-one
+  ports:
+    - port: 80
+      targetPort: 80 #dockerport
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-app-two-service
+spec:
+  selector:
+    app: java-app-two
+  ports:
+    - port: 80
+      targetPort: 80    
+  type: ClusterIP
+
