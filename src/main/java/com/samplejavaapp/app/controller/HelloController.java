@@ -16,4 +16,12 @@ public class HelloController {
         System.out.println(result);
         return result;
     }
+
+    @GetMapping("/api/deneme")
+    @ResponseBody
+    public String getFoos(@RequestParam String val) {
+        String result = "QueryStringValue: " + val;
+        System.out.println(result);
+        return result;
+    }
 }
