@@ -3,32 +3,24 @@ kind: Ingress
 metadata:
   name: app-ingress
   annotations:
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/rewrite-target: /api/foos?val
 spec:
   ingressClassName: nginx
   rules:
-  - host: bn.local
+  - host: buse.local
     http:
       paths:
-      - path: /api\/foos\?val=[A-La-l0-9_-]+$
-        pathType: Prefix
+      - path: /api/foos1
+        pathType: ImplementationSpecific
         backend:
           service:
             name: java-app-one
             port:
               number: 80
-      - path: /api\/foos\?val=[M-Zm-z_-]+$
-        pathType: Prefix
+      - path: /api/foos2
+        pathType: ImplementationSpecific
         backend:
           service:
             name: java-app-two
-            port:
-              number: 80
-      - path: /(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: java-app-one
             port:
               number: 80

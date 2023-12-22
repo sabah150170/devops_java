@@ -12,8 +12,50 @@ spec:
       labels:
         app: java-app-one
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/master
+                operator: DoesNotExist
       containers:
       - name: java-app-container
         image: bnsdcr/java_app
         ports:
-        - containerPort: 80
+        - containerPort: 9001
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "10m"
+          limits:
+            memory: "128Mi"
+            cpu: "20m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-app-two
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: java-app-two
+  template:
+    metadata:
+      labels:
+        app: java-app-two
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/master
+                operator: DoesNotExist
+      containers:
+      - name: java-app-container
+        image: bnsdcr/java_app
+        ports:
+        - containerPort: 9001
+

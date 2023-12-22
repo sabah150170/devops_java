@@ -1,0 +1,62 @@
+--- - name: Setup Minikube and Deploy Manifest hosts: localhost gather_facts: false become: false # Ensure 
+  that Ansible does not use elevated privileges
+
+  tasks:
+    - name: Start Minikube
+      command: minikube start --driver=docker --cpus 4
+ 
+    - name: Add a node
+      command: minikube node add
+      register: command_result
+
+      failed_when: "'Successfully added m02 to minikube!' not in command_result.stdout"
+
+    - name: Add another node
+      command: minikube node add
+      register: command_result2
+      
+      failed_when: "'Successfully added m03 to minikube!' not in command_result2.stdout"
+ 
+    - name: Enable ingress
+      command: minikube addons enable ingress
+
+    - name: Apply Kubernetes deployments
+      command: kubectl apply -f app-deployment.yaml
+
+    - name: Apply Kubernetes services
+      command: kubectl apply -f app-service.yaml   
+      
+    - name: nginx ingress
+      command: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+      ignore_errors: true
+       
+    - name: Wait until ingress up
+      command: kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=15m
+
+    - name: Apply Kubernetes ingress
+      command: kubectl apply -f app-ingress.yaml
+      ignore_errors: true
+      register: kubectl_result
+      
+    - name: Check if the task failed
+      fail:
+        msg: "Kubernetes task failed"
+      when: kubectl_result.rc != 0
+
+    - name: Wait before retrying
+      pause:
+        seconds: 10 
+      when: kubectl_result.rc != 0
+      
+    - name: Apply Kubernetes ingress
+      command: kubectl apply -f app-ingress.yaml
+      
+    - name: Apply Kubernetes hpa
+      command: kubectl apply -f app-hpa.yaml
+      
+      
+      
+      
+      
+      
+
