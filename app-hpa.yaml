@@ -1,18 +1,34 @@
+---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: hpa
+  name: hpa-cpu
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: java-app-one
   minReplicas: 2
-  maxReplicas: 4
+  maxReplicas: 5
   metrics:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: 50
+      target:
+        type: Utilization
+        averageUtilization: 40
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 180
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 40
+    scaleDown:
+      stabilizationWindowSeconds: 180
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 40
+        
 
-  

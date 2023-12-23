@@ -1,5 +1,8 @@
---- - name: Setup Minikube and Deploy Manifest hosts: localhost gather_facts: false become: false # Ensure 
-  that Ansible does not use elevated privileges
+--- 
+- name: Setup Minikube and Deploy Manifest 
+  hosts: localhost 
+  gather_facts: false 
+  become: false # Ensure that Ansible does not use elevated privileges
 
   tasks:
     - name: Start Minikube

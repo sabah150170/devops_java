@@ -26,11 +26,9 @@ spec:
         - containerPort: 9001
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "10m"
+            cpu: "40m"
           limits:
-            memory: "128Mi"
-            cpu: "20m"
+            cpu: "200m"
 ---
 apiVersion: apps/v1
 kind: Deployment
